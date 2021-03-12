@@ -1,12 +1,9 @@
-var createError = require('http-errors');
+require('dotenv').config();
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./src/routes/authors');
 
 var app = express();
 
@@ -16,22 +13,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  return {
+    status: 'error',
+    statusCode: 404,
+    message: 'Not found',
+  }
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-return  res.json({
-  s:"1"
-})
+  return {
+    status: 'error',
+    statusCode: 500,
+    message: 'An error has occurred',
+  }
 });
 
-var port = process.env.PORT || '3000';
-var server = http.createServer(app);
-server.listen(port, () => console.log('app listening on port ' + port));
 
-module.exports = app;
+var port = process.env.PORT || '3000';
+const server = app.listen(port, () => {
+  console.log(`App is running at http://localhost:${port} in ${app.get('env')} mode`);
+	console.log('Press CTRL-C to stop\n');
+});
+
+module.exports = server;

@@ -5,9 +5,12 @@
 exports.up = async knex => {
     const tracsaction = await knex.transaction();
     try {
-        await tracsaction.schema.createTable('categories', table => {
+        await tracsaction.schema.createTable('books_categories', table => {
             table.increments('id').primary();
-            table.string('name');
+            table.integer('category_id').unsigned();
+            table.foreign('category_id').references('categories.id').onDelete('CASCADE');
+            table.integer('book_id').unsigned();
+            table.foreign('book_id').references('books.id').onDelete('CASCADE');
         });
         await tracsaction.commit();
     } catch (error) {
@@ -21,7 +24,7 @@ exports.up = async knex => {
 exports.down = async knex => {
     const tracsaction = await knex.transaction();
     try {
-        await tracsaction.schema.dropTableIfExists('categories');
+        await tracsaction.schema.dropTableIfExists('books_categories');
         await tracsaction.commit();
     } catch (error) {
         await tracsaction.rollback();

@@ -9,8 +9,11 @@ exports.up = async knex => {
             table.increments('id').primary();
             table.string('title');
             table.string('description');
-            table.integer('author_id').unsigned().references('id').inTable('authors');
-            table.dateTime('return_date');
+            table.integer('author_id').unsigned();
+            table.foreign('author_id').references('authors.id').onDelete('CASCADE');
+            table.datetime('return_date');
+            table.timestamp('created_at').defaultTo(knex.fn.now());
+            table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
         await tracsaction.commit();
     } catch (error) {

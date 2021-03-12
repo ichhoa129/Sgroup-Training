@@ -5,10 +5,11 @@
 exports.up = async knex => {
     const tracsaction = await knex.transaction();
     try {
-        await tracsaction.schema.createTable('books_categories', table => {
+        await tracsaction.schema.createTable('categories', table => {
             table.increments('id').primary();
-            table.integer('category_id').unsigned().references('id').inTable('categories');
-            table.integer('book_id').unsigned().references('id').inTable('books');
+            table.string('name');
+            table.timestamp('created_at').defaultTo(knex.fn.now());
+            table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
         await tracsaction.commit();
     } catch (error) {
@@ -22,7 +23,7 @@ exports.up = async knex => {
 exports.down = async knex => {
     const tracsaction = await knex.transaction();
     try {
-        await tracsaction.schema.dropTableIfExists('books_categories');
+        await tracsaction.schema.dropTableIfExists('categories');
         await tracsaction.commit();
     } catch (error) {
         await tracsaction.rollback();
