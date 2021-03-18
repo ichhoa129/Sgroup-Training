@@ -1,5 +1,6 @@
+
 const faker = require('faker');
-exports.seed = knex => {
+exports.seed = function(knex) {
   const books = [];
   for (let i = 0; i < 300; i++) {
     const title = faker.name.title();
@@ -8,6 +9,8 @@ exports.seed = knex => {
     const return_date = faker.date.future();
     books.push({ title, description, author_id, return_date });
   }
-    knex('books').del() 
-    .then(() => knex('books').insert(books));
-    }
+  return knex('books').del()
+    .then(function () {
+      return knex('books').insert(books);
+    });
+};
