@@ -49,8 +49,8 @@ const getAll = async (req, res, next) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 5;
     let q = req.query.q || "";
-    const orderBy = req.query.orderBy || "";
-    const order = req.query.order || "";
+    const orderBy = req.query.orderBy || "id";
+    const order = req.query.order || "asc";
 
     const data = await knex('profiles')
       .where({author_id})

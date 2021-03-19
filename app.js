@@ -2,9 +2,8 @@ require('dotenv').config();
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var http = require('http');
 var indexRouter = require('./src/routes/authors');
-
+var authRouter = require('./src/routes/auth');
 var app = express();
 
 app.use(logger('dev'));
@@ -13,6 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

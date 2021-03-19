@@ -1,11 +1,14 @@
 const knex = require('../knex/connection');
+const authorService = require('../services/authorService');
 const createOne = async (req, res, next) => {
   try {
     const data = await knex('authors').insert({
       email: req.body.email,
       password: req.body.password,
+      role_id: req.body.role_id || 2,
     });
-    const inserted = await knex('authors').where('id', data[0]).first();
+    
+    const inserted = await authorService.getOneById(data[0]);
     return res.json({
       status: 'success',
       data: inserted,
@@ -20,7 +23,7 @@ const createOne = async (req, res, next) => {
 }
 const getOne = async (req, res, next) => {
   try {
-    const data = await knex('authors').where({ id: req.params.id }).first();
+    const data = await authorService.getOneById(req.params.id);
     if(!data) {
       return res.json({
         status: "fail",
@@ -33,6 +36,7 @@ const getOne = async (req, res, next) => {
       data,
     })
   } catch(err) {
+    console.log(err)
     return res.json({
       status: 'error',
       code: 500,
@@ -45,8 +49,8 @@ const getAll = async (req, res, next) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 5;
     let q = req.query.q || "";
-    const orderBy = req.query.orderBy || "";
-    const order = req.query.order || "";
+    const orderBy = req.query.orderBy || "id";
+    const order = req.query.order || "asc";
 
     const data = await knex('authors')
       .where('email', 'like', `%${q}%`)
@@ -64,6 +68,7 @@ const getAll = async (req, res, next) => {
       count: count[0].count
     });
   } catch (err) {
+    console.log(err);
     return res.json({
       status: 'error',
       code: 500,
@@ -73,7 +78,7 @@ const getAll = async (req, res, next) => {
 }
 const patchOne = async (req, res, next) => {
   try {
-    const user = await knex('authors').where({ id: req.params.id }).first();
+    const user = await authorService.getOneById(req.params.id);
     if(!user)
       return res.json({
         status: 'fail',
@@ -97,7 +102,7 @@ const patchOne = async (req, res, next) => {
 }
 const deleteOne = async (req, res, next) => {
   try {
-    const user = await knex('authors').where({ id: req.params.id }).first();
+    const user = await authorService.getOneById(req.params.id);
     if(!user)
       return res.json({
         status: 'fail',

@@ -9,7 +9,7 @@
     "knexreset": "yarn knex migrate:rollback && yarn knex migrate:latest && yarn knex seed:run"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",

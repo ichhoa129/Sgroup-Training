@@ -43,7 +43,7 @@ const validateGetAll = (req, res, next) => {
       statusCode: 400,
       message: 'Limit is not integer'
     });
-  if(!['desc','asc'].includes(req.query.order.toLowerCase())) 
+    if(!req.query.order || !['asc', 'desc'].includes(req.query.order.toLowerCase()))
     return res.json({
       status: 'fail',
       statusCode: 400,

@@ -1,4 +1,5 @@
 const knex = require('../knex/connection');
+const bookService = require('../services/bookService');
 
 const createOne = async (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ const createOne = async (req, res, next) => {
       author_id,
       return_date
     });
-    const inserted = await knex('books').where('id', data[0]).first();
+    const inserted = await bookService.getOneById(data[0]);
     return res.json({
       status: 'success',
       data: inserted,
@@ -24,7 +25,7 @@ const createOne = async (req, res, next) => {
 }
 const getOne = async (req, res, next) => {
   try {
-    const data = await knex('books').where({ id: req.params.id }).first();
+    const data = await bookService.getOneById(data[0]);
     if(!data) {
       return res.json({
         status: "fail",
@@ -49,8 +50,8 @@ const getAll = async (req, res, next) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 5;
     let q = req.query.q || "";
-    const orderBy = req.query.orderBy || "";
-    const order = req.query.order || "";
+    const orderBy = req.query.orderBy || "id";
+    const order = req.query.order || "asc";
 
     const data = await knex('books')
       .where('title', 'like', `%${q}%`)
@@ -77,7 +78,7 @@ const getAll = async (req, res, next) => {
 }
 const patchOne = async (req, res, next) => {
   try {
-    const book = await knex('books').where({ id: req.params.id }).first();
+    const book = await bookService.getOneById(data[0]);
     if(!book)
       return res.json({
         status: 'fail',
@@ -101,7 +102,7 @@ const patchOne = async (req, res, next) => {
 }
 const deleteOne = async (req, res, next) => {
   try {
-    const book = await knex('books').where({ id: req.params.id }).first();
+    const book = await bookService.getOneById(data[0]);
     if(!book)
       return res.json({
         status: 'fail',
