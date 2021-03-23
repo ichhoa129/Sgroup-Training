@@ -4,6 +4,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./src/routes/authors');
 var authRouter = require('./src/routes/auth');
+var mediaRouter = require('./src/routes/media');
+const { handleError } = require('./src/helpers/errorHandler');
+
 var app = express();
 
 app.use(logger('dev'));
@@ -13,6 +16,7 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/media', mediaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -25,11 +29,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  return {
-    status: 'error',
-    statusCode: 500,
-    message: 'An error has occurred',
-  }
+  handleError(err, res);
 });
 
 
